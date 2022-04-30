@@ -1,36 +1,46 @@
-import { useState, useEffect } from "react";
-
-function Hello() {
-  /* function hiFn() {
-    console.log("Hi :)");
-    return byeFn;
-  }
-  function byeFn() {
-    console.log("bye :(");
-  }
-  useEffect(hiFn, []); */
-
-  useEffect(() => {
-    console.log("hihi :)");
-    return () => console.log("byebye :(");
-  });
-  useEffect(function () {
-    console.log("hi :}");
-    return function () {
-      console.log("bye :(");
-    };
-  }, []);
-
-  return <h1>Hello</h1>;
-}
+import { useState } from "react";
 
 function App() {
-  const [showing, setShowing] = useState(false);
-  const onClick = () => setShowing((prev) => !prev);
+  const [toDo, setToDo] = useState("");
+  const [toDos, setToDos] = useState([]);
+  const onChange = (event) => setToDo(event.target.value);
+  const onSubmit = (event) => {
+    event.preventDefault();
+    if (toDo === "") {
+      return; //
+    }
+    setToDos((currentArray) => [toDo, ...currentArray]);
+    setToDo("");
+  };
+  /*  const delBtn = (index) => {
+    const li = index.target.parentElement;
+    li.remove();
+  }; */
+  const delBtn = (index) => {
+    setToDos(toDos.filter((item, todoIndex) => index !== todoIndex));
+  };
+  console.log(toDos);
+  console.log(toDos.map((item, index) => <li key={index}>{item}</li>));
   return (
     <div>
-      <button onClick={onClick}>{showing ? "Hide" : "Show"}</button>
-      {showing ? <Hello /> : null}
+      <h1>My To Dos ({toDos.length})</h1>
+      <form onSubmit={onSubmit}>
+        <input
+          onChange={onChange}
+          value={toDo}
+          type="text"
+          placeholder="Write your to do.."
+        ></input>
+        <button>Add to do</button>
+      </form>
+      <hr />
+      {toDos.map((item, index) => (
+        <li key={index}>
+          {item}
+          <button onClick={() => delBtn(index)}>❌</button>
+        </li>
+      ))}
+      <ul></ul>
     </div>
   );
 }
